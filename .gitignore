@@ -22,3 +22,4 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+/summer2024-swp391.se1811-g1-20240518T151326Z-001/summer2024-swp391.se1811-g1/OnlineShopping/dist/
