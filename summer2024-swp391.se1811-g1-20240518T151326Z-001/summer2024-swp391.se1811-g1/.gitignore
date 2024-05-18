@@ -1,0 +1,10 @@
+
+OnlineShopping/nbproject/project.xml
+OnlineShopping/nbproject/project.properties
+OnlineShopping/nbproject/private/private.properties
+OnlineShopping/nbproject/genfiles.properties
+OnlineShopping/nbproject/build-impl.xml
+OnlineShopping/build/web/WEB-INF/lib/jakarta.servlet.jsp.jstl-2.0.0.jar
+OnlineShopping/build/web/WEB-INF/lib/jakarta.servlet.jsp.jstl-api-2.0.0.jar
+OnlineShopping/build/web/WEB-INF/lib/jaxb-api-2.1.jar
+OnlineShopping/build/web/WEB-INF/lib/sqljdbc42.jar
