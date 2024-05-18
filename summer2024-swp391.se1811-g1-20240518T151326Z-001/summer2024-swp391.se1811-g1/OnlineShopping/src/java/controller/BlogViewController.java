@@ -4,6 +4,8 @@
  */
 package controller;
 
+import dao.BlogCategoriesDAO;
+import dao.BlogDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,6 +13,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import model.Blog;
+import model.BlogCategories;
 
 /**
  *
@@ -31,7 +36,24 @@ public class BlogViewController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String category = request.getParameter("category");
+        String search = request.getParameter("search");
+        int currentPage = request.getParameter("cp") == null ? 1 : Integer.parseInt(request.getParameter("cp"));
+        int limitPage = 10;
+        BlogDAO blogDAO = new BlogDAO();
+        BlogCategoriesDAO blogCategoryDAO = new BlogCategoriesDAO();
+        List<Blog> blogs = blogDAO.getFilteredBlogs(category, search, "Active", currentPage, limitPage);
+        List<BlogCategories> categories = blogCategoryDAO.getAllBlogCategories();
+        int totalBlogs = blogDAO.countFilteredBlogs(category, search, "Active");
+        int totalPages = (int) Math.ceil(totalBlogs / (double) limitPage);
 
+        request.setAttribute("blogs", blogs);
+        request.setAttribute("categories", categories);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("category", category);
+        request.setAttribute("search", search);
+        request.getRequestDispatcher("blog.jsp").forward(request, response);
     }
 
     /**

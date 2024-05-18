@@ -9,8 +9,8 @@ package model;
  * @author admin
  */
 public class Account {
-    private int account_id;
-    private String user_email ;
+    private int account_id; 
+    private String user_email; 
     private String user_pass;
     private int account_status;
 
