@@ -18,9 +18,11 @@ import model.*;
 public class BlogDAO extends DBContext {
 
     private BlogCategoriesDAO bcDAO;
+    private UserDAO uDAO;
 
     public BlogDAO() {
         bcDAO = new BlogCategoriesDAO();
+        uDAO = new UserDAO();
     }
 
     public Blog getBlogByID(int id) {
@@ -40,6 +42,7 @@ public class BlogDAO extends DBContext {
                     blog.setUser_id(rs.getInt("user_id"));
                     blog.setBlog_cate_id(rs.getInt("blog_cate_id"));
                     blog.setBlogCategories(bcDAO.getBlogCategories(rs.getInt("blog_cate_id")));
+                    blog.setUser(uDAO.getUserById(blog.getUser_id()));
                 }
             }
         } catch (SQLException e) {
@@ -120,15 +123,21 @@ public class BlogDAO extends DBContext {
         return blogs;
     }
 
-    public List<Blog> getFilteredBlogs(String category, String search, String status, int currentPage, int limitPage) {
+    public List<Blog> getFilteredBlogs(String category, String search, String status, String userId, int currentPage, int limitPage) {
         List<Blog> blogs = new ArrayList<>();
-        StringBuilder queryBuilder = new StringBuilder("SELECT blog_id, blog_title, blog_img, blog_main, blog_date, user_id, blog_cate_id, blog_status FROM Blog WHERE blog_status = ?");
+        StringBuilder queryBuilder = new StringBuilder("SELECT blog_id, blog_title, blog_img, blog_main, blog_date, user_id, blog_cate_id, blog_status FROM Blog WHERE 1=1");
 
+        if (status != null && !status.isEmpty()) {
+            queryBuilder.append(" AND blog_status = ?");
+        }
         if (category != null && !category.isEmpty()) {
             queryBuilder.append(" AND blog_cate_id = ?");
         }
         if (search != null && !search.isEmpty()) {
             queryBuilder.append(" AND blog_title LIKE ?");
+        }
+        if (userId != null && !userId.isEmpty()) {
+            queryBuilder.append(" AND user_id = ?");
         }
         queryBuilder.append(" ORDER BY blog_date DESC");
 
@@ -136,13 +145,18 @@ public class BlogDAO extends DBContext {
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             int paramIndex = 1;
-            ps.setString(paramIndex++, status);
 
+            if (status != null && !status.isEmpty()) {
+                ps.setString(paramIndex++, status);
+            }
             if (category != null && !category.isEmpty()) {
                 ps.setInt(paramIndex++, Integer.parseInt(category));
             }
             if (search != null && !search.isEmpty()) {
-                ps.setString(paramIndex, "%" + search + "%");
+                ps.setString(paramIndex++, "%" + search + "%");
+            }
+            if (userId != null && !userId.isEmpty()) {
+                ps.setInt(paramIndex++, Integer.parseInt(userId));
             }
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -162,6 +176,7 @@ public class BlogDAO extends DBContext {
                         blog.setBlog_cate_id(rs.getInt("blog_cate_id"));
                         blog.setBlog_status(rs.getString("blog_status"));
                         blog.setBlogCategories(bcDAO.getBlogCategories(rs.getInt("blog_cate_id")));
+                        blog.setUser(uDAO.getUserById(blog.getUser_id()));
                         blogs.add(blog);
                     }
                     count++;
@@ -173,7 +188,7 @@ public class BlogDAO extends DBContext {
         return blogs;
     }
 
-    public int countFilteredBlogs(String category, String search, String status) {
+    public int countFilteredBlogs(String category, String search, String status, String userId) {
         int count = 0;
         StringBuilder queryBuilder = new StringBuilder("SELECT COUNT(*) AS count FROM Blog WHERE blog_status = ?");
 
@@ -182,6 +197,9 @@ public class BlogDAO extends DBContext {
         }
         if (search != null && !search.isEmpty()) {
             queryBuilder.append(" AND blog_title LIKE ?");
+        }
+        if (userId != null && !userId.isEmpty()) {
+            queryBuilder.append(" AND user_id = ?");
         }
 
         String query = queryBuilder.toString();
@@ -194,7 +212,10 @@ public class BlogDAO extends DBContext {
                 ps.setInt(paramIndex++, Integer.parseInt(category));
             }
             if (search != null && !search.isEmpty()) {
-                ps.setString(paramIndex, "%" + search + "%");
+                ps.setString(paramIndex++, "%" + search + "%");
+            }
+            if (userId != null && !userId.isEmpty()) {
+                ps.setString(paramIndex++, userId);
             }
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -210,6 +231,5 @@ public class BlogDAO extends DBContext {
 
     public static void main(String[] args) {
         BlogDAO bDAO = new BlogDAO();
-        System.out.println(bDAO.getFilteredBlogs(null, null, "Active", 1, 10).size());
     }
 }

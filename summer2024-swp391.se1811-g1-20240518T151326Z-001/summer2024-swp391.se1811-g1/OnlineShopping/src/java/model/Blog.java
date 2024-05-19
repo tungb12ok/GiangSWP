@@ -20,7 +20,8 @@ public class Blog {
     private int blog_cate_id;
     private String blog_status;
     private BlogCategories blogCategories;
-
+    private User user;
+    
     public Blog() {
     }
 
@@ -35,6 +36,14 @@ public class Blog {
         this.blog_status = blog_status;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+    
     public String getBlog_status() {
         return blog_status;
     }

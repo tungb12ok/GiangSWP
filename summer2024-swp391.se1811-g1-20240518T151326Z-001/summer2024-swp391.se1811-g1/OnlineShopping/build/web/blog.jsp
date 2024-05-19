@@ -25,9 +25,13 @@
                         <c:forEach items="${blogs}" var="blog">
                             <div class="col-md-4 mb-4">
                                 <div class="card">
-                                    <img src="${blog.blog_image}" class="card-img-top" alt="${blog.blog_title}">
+                                    <a href="blogDetail?id=${blog.blog_id}">
+                                        <img src="${blog.blog_image}" class="card-img-top" alt="${blog.blog_title}">
+                                    </a>
                                     <div class="card-body">
-                                        <h5 class="card-title">${blog.blog_title}</h5>
+                                        <a href="blogDetail?id=${blog.blog_id}">
+                                            <h5 class="card-title">${blog.blog_title}</h5>
+                                        </a>
                                         <p class="card-text">${blog.blog_main}</p>
                                         <p class="card-text"><small class="text-muted">${blog.blog_date}</small></p>
                                     </div>
@@ -47,8 +51,8 @@
                             <a href="?category=&search=${param.search}&status=${param.status}">All</a>
                         </li>
                         <c:forEach items="${categories}" var="category">
-                            <li class="list-group-item ${param.category == category.blog_cate_id ? 'active' : ''}">
-                                <a href="?category=${category.blog_cate_id}&search=${param.search}&status=${param.status}">${category.blog_cate_name}</a>
+                            <li class="list-group-item ${param.category == category.blog_cate_id ? 'active' : ''} text-dark">
+                                <a class="text-dark" href="?category=${category.blog_cate_id}&search=${param.search}&status=${param.status}">${category.blog_cate_name}</a>
                             </li>
                         </c:forEach>
                     </ul>
