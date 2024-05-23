@@ -42,9 +42,9 @@ public class BlogViewController extends HttpServlet {
         int limitPage = 10;
         BlogDAO blogDAO = new BlogDAO();
         BlogCategoriesDAO blogCategoryDAO = new BlogCategoriesDAO();
-        List<Blog> blogs = blogDAO.getFilteredBlogs(category, search, "Active", currentPage, limitPage);
+        List<Blog> blogs = blogDAO.getFilteredBlogs(category, search, "Active",null, currentPage, limitPage);
         List<BlogCategories> categories = blogCategoryDAO.getAllBlogCategories();
-        int totalBlogs = blogDAO.countFilteredBlogs(category, search, "Active");
+        int totalBlogs = blogDAO.countFilteredBlogs(category, search,null, "Active");
         int totalPages = (int) Math.ceil(totalBlogs / (double) limitPage);
 
         request.setAttribute("blogs", blogs);
